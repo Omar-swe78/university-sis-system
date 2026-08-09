@@ -1,0 +1,223 @@
+{% extends 'base.html' %}
+
+{% block title %}Teacher Dashboard - University Management System{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Sidebar -->
+    <div class="col-md-3">
+        <div class="sidebar">
+            <div class="text-center mb-4">
+                <div class="avatar mb-3">
+                    <i class="bi bi-person-badge-fill display-1"></i>
+                </div>
+                <h5>{{ teacher_name }}</h5>
+                <p class="text-muted">Professor</p>
+            </div>
+            
+            <div class="nav flex-column">
+                <a href="{{ url_for('teacher_courses') }}" class="nav-link">
+                    <i class="bi bi-book-fill me-2"></i>My Courses
+                </a>
+                <a href="{{ url_for('teacher_schedule') }}" class="nav-link">
+                    <i class="bi bi-calendar-fill me-2"></i>Schedule
+                </a>
+                <a href="{{ url_for('teacher_register_courses') }}" class="nav-link">
+                    <i class="bi bi-plus-circle-fill me-2"></i>Course Assignment
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="col-md-9">
+        <!-- Welcome Section -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Welcome back, {{ teacher_name }}!</h4>
+                        <p class="card-text">Here's your teaching overview for this semester.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="row mb-4">
+            <div class="col-md-6 col-lg-3 mb-3">
+                <div class="stats-card">
+                    <i class="bi bi-book-fill display-4"></i>
+                    <h3>{{ courses|length }}</h3>
+                    <p class="mb-0">Active Courses</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 mb-3">
+                <div class="stats-card" style="background: linear-gradient(135deg, #fc6076, #ff9a44);">
+                    <i class="bi bi-people-fill display-4"></i>
+                    <h3>{{ total_students if total_students else 0 }}</h3>
+                    <p class="mb-0">Total Students</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 mb-3">
+                <div class="stats-card" style="background: linear-gradient(135deg, #11998e, #38ef7d);">
+                    <i class="bi bi-clock-fill display-4"></i>
+                    <h3>{{ weekly_schedule|length }}</h3>
+                    <p class="mb-0">Classes/Week</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 mb-3">
+                <div class="stats-card" style="background: linear-gradient(135deg, #45b649, #dce35b);">
+                    <i class="bi bi-award-fill display-4"></i>
+                    <h3>{{ total_assignments if total_assignments else 0 }}</h3>
+                    <p class="mb-0">Active Assignments</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Current Courses -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4"><i class="bi bi-book-fill me-2"></i>Current Courses</h5>
+                        {% if courses %}
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Course Name</th>
+                                            <th>Credit Hours</th>
+                                            <th>Section</th>
+                                            <th>Room</th>
+                                            <th>Schedule</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for course in courses %}
+                                            <tr>
+                                                <td>{{ course.name }}</td>
+                                                <td>{{ course.credit_hours }}</td>
+                                                <td>{{ course.section }}</td>
+                                                <td>{{ course.room }}</td>
+                                                <td>{{ course.time }}</td>
+                                                <td>
+                                                    <a href="#" class="btn btn-sm btn-primary">
+                                                        <i class="bi bi-eye-fill"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <div class="alert alert-info">
+                                <i class="bi bi-info-circle-fill me-2"></i>
+                                You are not assigned to any courses yet.
+                                <a href="{{ url_for('teacher_register_courses') }}" class="alert-link">Get course assignments</a>.
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Today's Schedule -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4"><i class="bi bi-calendar-fill me-2"></i>Today's Schedule</h5>
+                        {% if weekly_schedule %}
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Time</th>
+                                            <th>Course</th>
+                                            <th>Room</th>
+                                            <th>Section</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for day, time, course in weekly_schedule %}
+                                            {% if day == current_day %}
+                                                <tr>
+                                                    <td>{{ time }}</td>
+                                                    <td>{{ course }}</td>
+                                                    <td>{{ get_course_room(course) }}</td>
+                                                    <td>{{ get_course_section(course) }}</td>
+                                                </tr>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <div class="alert alert-info">
+                                <i class="bi bi-info-circle-fill me-2"></i>
+                                No classes scheduled for today.
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4"><i class="bi bi-link-45deg me-2"></i>Quick Actions</h5>
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <a href="{{ url_for('teacher_register_courses') }}" class="btn btn-primary w-100">
+                                    <i class="bi bi-plus-circle-fill me-2"></i>Course Assignment
+                                </a>
+                            </div>
+                            <div class="col-md-4">
+                                <a href="{{ url_for('teacher_schedule') }}" class="btn btn-success w-100">
+                                    <i class="bi bi-calendar-fill me-2"></i>View Schedule
+                                </a>
+                            </div>
+                            <div class="col-md-4">
+                                <a href="#" class="btn btn-info w-100">
+                                    <i class="bi bi-pencil-fill me-2"></i>Grade Management
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Add active class to current sidebar link
+    document.addEventListener('DOMContentLoaded', function() {
+        var currentPath = window.location.pathname;
+        var sidebarLinks = document.querySelectorAll('.sidebar .nav-link');
+        
+        sidebarLinks.forEach(function(link) {
+            if (link.getAttribute('href') === currentPath) {
+                link.classList.add('active');
+            }
+        });
+    });
+
+    // Refresh statistics periodically
+    function refreshStats() {
+        // In a real application, you would make an AJAX call here
+        // to fetch updated statistics
+    }
+    
+    // Refresh every 5 minutes
+    setInterval(refreshStats, 300000);
+</script>
+{% endblock %} 

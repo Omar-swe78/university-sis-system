@@ -1,0 +1,307 @@
+{% extends "base.html" %}
+
+{% block title %}Sign In - University Management System{% endblock %}
+
+{% block extra_css %}
+<style>
+    .auth-container {
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        margin: -2rem -15px 0 -15px;
+        padding: 2rem 15px;
+    }
+    
+    .auth-card {
+        width: 100%;
+        max-width: 450px;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        overflow: hidden;
+        animation: slideInUp 0.6s ease-out;
+    }
+    
+    .auth-header {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        text-align: center;
+        padding: 2rem;
+    }
+    
+    .auth-header h2 {
+        margin: 0;
+        font-size: 1.8rem;
+        font-weight: bold;
+    }
+    
+    .auth-header p {
+        margin: 0.5rem 0 0 0;
+        opacity: 0.9;
+    }
+    
+    .auth-body {
+        padding: 2rem;
+    }
+    
+    .form-floating {
+        margin-bottom: 1rem;
+    }
+    
+    .form-floating .form-control {
+        border-radius: 12px;
+        border: 2px solid #e9ecef;
+        padding: 1rem 0.75rem;
+        height: auto;
+    }
+    
+    .form-floating .form-control:focus {
+        border-color: var(--secondary-color);
+        box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+    }
+    
+    .form-floating label {
+        padding: 1rem 0.75rem;
+        color: #6c757d;
+    }
+    
+    .btn-auth {
+        width: 100%;
+        padding: 12px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        border-radius: 12px;
+        background: linear-gradient(135deg, var(--secondary-color), #5dade2);
+        border: none;
+        color: white;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-auth:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(52, 152, 219, 0.3);
+        color: white;
+    }
+    
+    .auth-divider {
+        text-align: center;
+        margin: 1.5rem 0;
+        position: relative;
+    }
+    
+    .auth-divider::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: #e9ecef;
+    }
+    
+    .auth-divider span {
+        background: white;
+        padding: 0 1rem;
+        color: #6c757d;
+        font-size: 0.9rem;
+    }
+    
+    .auth-footer {
+        text-align: center;
+        padding: 1rem 2rem 2rem 2rem;
+        color: #6c757d;
+    }
+    
+    .auth-footer a {
+        color: var(--secondary-color);
+        text-decoration: none;
+        font-weight: 600;
+        transition: color 0.3s ease;
+    }
+    
+    .auth-footer a:hover {
+        color: var(--primary-color);
+        text-decoration: underline;
+    }
+    
+    .password-toggle {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: #6c757d;
+        cursor: pointer;
+        z-index: 10;
+    }
+    
+    .password-toggle:hover {
+        color: var(--secondary-color);
+    }
+    
+    @keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .auth-container {
+            padding: 1rem;
+        }
+        
+        .auth-card {
+            margin: 0;
+        }
+        
+        .auth-header, .auth-body, .auth-footer {
+            padding: 1.5rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <i class="bi bi-mortarboard-fill" style="font-size: 2.5rem; margin-bottom: 1rem;"></i>
+            <h2>Welcome Back</h2>
+            <p>Sign in to your account to continue</p>
+        </div>
+        
+        <div class="auth-body">
+            <form method="POST" id="signinForm" novalidate>
+                <div class="form-floating">
+                    <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com" required>
+                    <label for="email"><i class="bi bi-envelope-fill me-2"></i>Email Address</label>
+                    <div class="invalid-feedback">
+                        Please enter a valid email address.
+                    </div>
+                </div>
+                
+                <div class="form-floating position-relative">
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+                    <label for="password"><i class="bi bi-lock-fill me-2"></i>Password</label>
+                    <button type="button" class="password-toggle" onclick="togglePassword()">
+                        <i class="bi bi-eye-fill" id="passwordToggleIcon"></i>
+                    </button>
+                    <div class="invalid-feedback">
+                        Password is required.
+                    </div>
+                </div>
+                
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="rememberMe" name="remember">
+                        <label class="form-check-label" for="rememberMe">
+                            Remember me
+                        </label>
+                    </div>
+                    <a href="{{ url_for('auth.forgot_password') }}" class="text-decoration-none" style="font-size: 0.9rem;">
+                        Forgot password?
+                    </a>
+                </div>
+                
+                <button type="submit" class="btn btn-auth">
+                    <i class="bi bi-box-arrow-in-right me-2"></i>
+                    Sign In
+                </button>
+            </form>
+        </div>
+        
+        <div class="auth-footer">
+            <p class="mb-0">
+                Don't have an account? 
+                <a href="{{ url_for('auth.signup') }}">Sign up here</a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function togglePassword() {
+        const passwordInput = document.getElementById('password');
+        const toggleIcon = document.getElementById('passwordToggleIcon');
+        
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            toggleIcon.className = 'bi bi-eye-slash-fill';
+        } else {
+            passwordInput.type = 'password';
+            toggleIcon.className = 'bi bi-eye-fill';
+        }
+    }
+    
+    // Form validation
+    document.getElementById('signinForm').addEventListener('submit', function(e) {
+        const form = this;
+        const email = document.getElementById('email');
+        const password = document.getElementById('password');
+        
+        let isValid = true;
+        
+        // Email validation
+        if (!email.value.trim() || !email.checkValidity()) {
+            email.classList.add('is-invalid');
+            isValid = false;
+        } else {
+            email.classList.remove('is-invalid');
+            email.classList.add('is-valid');
+        }
+        
+        // Password validation
+        if (!password.value.trim()) {
+            password.classList.add('is-invalid');
+            isValid = false;
+        } else {
+            password.classList.remove('is-invalid');
+            password.classList.add('is-valid');
+        }
+        
+        if (!isValid) {
+            e.preventDefault();
+            e.stopPropagation();
+        } else {
+            // Show loading state
+            const submitBtn = form.querySelector('button[type="submit"]');
+            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Signing in...';
+            submitBtn.disabled = true;
+        }
+        
+        form.classList.add('was-validated');
+    });
+    
+    // Real-time validation
+    document.getElementById('email').addEventListener('input', function() {
+        if (this.checkValidity()) {
+            this.classList.remove('is-invalid');
+            this.classList.add('is-valid');
+        } else {
+            this.classList.remove('is-valid');
+            this.classList.add('is-invalid');
+        }
+    });
+    
+    document.getElementById('password').addEventListener('input', function() {
+        if (this.value.trim()) {
+            this.classList.remove('is-invalid');
+            this.classList.add('is-valid');
+        } else {
+            this.classList.remove('is-valid');
+            this.classList.add('is-invalid');
+        }
+    });
+</script>
+{% endblock %}
+

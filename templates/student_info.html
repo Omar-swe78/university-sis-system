@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+
+{% block title %}My Information - University Management System{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Sidebar -->
+    <div class="col-md-3">
+        <div class="sidebar">
+            <div class="text-center mb-4">
+                <div class="avatar mb-3">
+                    <i class="bi bi-person-circle display-1"></i>
+                </div>
+                <h5>{{ student_info.name }}</h5>
+                <p class="text-muted mb-0">{{ student_info.university_number }}</p>
+                <p class="text-muted">{{ student_info.major }}</p>
+            </div>
+            
+            <div class="nav flex-column">
+                <a href="{{ url_for('student_info') }}" class="nav-link active">
+                    <i class="bi bi-person-fill me-2"></i>My Profile
+                </a>
+                <a href="{{ url_for('student_courses') }}" class="nav-link">
+                    <i class="bi bi-book-fill me-2"></i>My Courses
+                </a>
+                <a href="{{ url_for('student_schedule') }}" class="nav-link">
+                    <i class="bi bi-calendar-fill me-2"></i>Schedule
+                </a>
+                <a href="{{ url_for('student_register_courses') }}" class="nav-link">
+                    <i class="bi bi-plus-circle-fill me-2"></i>Register Courses
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="col-md-9">
+        <!-- Profile Information -->
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title mb-4">
+                    <i class="bi bi-person-fill me-2"></i>Personal Information
+                </h4>
+                
+                <div class="row g-4">
+                    <!-- Basic Information -->
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title mb-3">
+                                    <i class="bi bi-person-vcard-fill me-2"></i>Basic Details
+                                </h5>
+                                <ul class="list-unstyled">
+                                    <li class="mb-2">
+                                        <strong class="text-muted">Full Name:</strong><br>
+                                        {{ student_info.name }}
+                                    </li>
+                                    <li class="mb-2">
+                                        <strong class="text-muted">Email:</strong><br>
+                                        {{ student_info.email }}
+                                    </li>
+                                    <li class="mb-2">
+                                        <strong class="text-muted">Phone:</strong><br>
+                                        {{ student_info.phone }}
+                                    </li>
+                                    <li class="mb-2">
+                                        <strong class="text-muted">Nationality:</strong><br>
+                                        {{ student_info.nationality }}
+                                    </li>
+                                    <li class="mb-2">
+                                        <strong class="text-muted">Gender:</strong><br>
+                                        {{ student_info.gender }}
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Academic Information -->
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title mb-3">
+                                    <i class="bi bi-mortarboard-fill me-2"></i>Academic Details
+                                </h5>
+                                <ul class="list-unstyled">
+                                    <li class="mb-2">
+                                        <strong class="text-muted">Student ID:</strong><br>
+                                        {{ student_info.university_number }}
+                                    </li>
+                                    <li class="mb-2">
+                                        <strong class="text-muted">Major:</strong><br>
+                                        {{ student_info.major }}
+                                    </li>
+                                    <li class="mb-2">
+                                        <strong class="text-muted">Status:</strong><br>
+                                        <span class="badge bg-{{ 'success' if student_info.status == 'Active' else 'warning' }}">
+                                            {{ student_info.status }}
+                                        </span>
+                                    </li>
+                                    <li class="mb-2">
+                                        <strong class="text-muted">Academic Standing:</strong><br>
+                                        <span class="badge bg-{{ 'success' if student_info.standing == 'Good' else 'warning' }}">
+                                            {{ student_info.standing }}
+                                        </span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Academic Progress -->
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title mb-3">
+                                    <i class="bi bi-graph-up-arrow me-2"></i>Academic Progress
+                                </h5>
+                                <div class="row g-4">
+                                    <div class="col-md-4">
+                                        <div class="text-center">
+                                            <h3 class="mb-0">{{ student_info.cumulative_gpa }}</h3>
+                                            <p class="text-muted mb-0">Cumulative GPA</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="text-center">
+                                            <h3 class="mb-0">{{ student_info.hours_done }}</h3>
+                                            <p class="text-muted mb-0">Credit Hours Done</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="text-center">
+                                            <h3 class="mb-0">{{ student_info.hours_left }}</h3>
+                                            <p class="text-muted mb-0">Credit Hours Left</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,650 @@
+{% extends "base.html" %}
+
+{% block title %}Add Student - University Management System{% endblock %}
+
+{% block extra_css %}
+<style>
+    .form-container {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        overflow: hidden;
+        margin-top: 2rem;
+    }
+    
+    .form-header {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        text-align: center;
+        padding: 2rem;
+    }
+    
+    .form-header h2 {
+        margin: 0;
+        font-size: 1.8rem;
+        font-weight: bold;
+    }
+    
+    .form-header p {
+        margin: 0.5rem 0 0 0;
+        opacity: 0.9;
+    }
+    
+    .form-body {
+        padding: 2rem;
+    }
+    
+    .form-section {
+        background: #f8f9fa;
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        border-left: 4px solid var(--secondary-color);
+    }
+    
+    .form-section-title {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .form-floating {
+        margin-bottom: 1rem;
+    }
+    
+    .form-floating .form-control, .form-floating .form-select {
+        border-radius: 12px;
+        border: 2px solid #e9ecef;
+        padding: 1rem 0.75rem;
+        height: auto;
+        transition: all 0.3s ease;
+    }
+    
+    .form-floating .form-control:focus, .form-floating .form-select:focus {
+        border-color: var(--secondary-color);
+        box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+    }
+    
+    .form-floating label {
+        padding: 1rem 0.75rem;
+        color: #6c757d;
+    }
+    
+    .form-check-group {
+        background: white;
+        border-radius: 12px;
+        padding: 1rem;
+        border: 2px solid #e9ecef;
+        margin-bottom: 1rem;
+        transition: all 0.3s ease;
+    }
+    
+    .form-check-group:focus-within {
+        border-color: var(--secondary-color);
+        box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+    }
+    
+    .form-check-group .form-check {
+        margin-bottom: 0.5rem;
+    }
+    
+    .form-check-group .form-check:last-child {
+        margin-bottom: 0;
+    }
+    
+    .form-check-input:checked {
+        background-color: var(--secondary-color);
+        border-color: var(--secondary-color);
+    }
+    
+    .checkbox-list {
+        max-height: 200px;
+        overflow-y: auto;
+        border: 2px solid #e9ecef;
+        border-radius: 12px;
+        padding: 1rem;
+        background: white;
+    }
+    
+    .checkbox-list .form-check {
+        margin-bottom: 0.5rem;
+    }
+    
+    .btn-submit {
+        width: 100%;
+        padding: 12px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        border-radius: 12px;
+        background: linear-gradient(135deg, var(--success-color), #58d68d);
+        border: none;
+        color: white;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(39, 174, 96, 0.3);
+        color: white;
+    }
+    
+    .btn-cancel {
+        width: 100%;
+        padding: 12px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        border-radius: 12px;
+        background: #6c757d;
+        border: none;
+        color: white;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+    }
+    
+    .btn-cancel:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(108, 117, 125, 0.3);
+        color: white;
+        text-decoration: none;
+    }
+    
+    .required-field::after {
+        content: " *";
+        color: #dc3545;
+        font-weight: bold;
+    }
+    
+    .form-text {
+        font-size: 0.875rem;
+        color: #6c757d;
+        margin-top: 0.25rem;
+    }
+    
+    .character-count {
+        font-size: 0.8rem;
+        color: #6c757d;
+        text-align: right;
+        margin-top: 0.25rem;
+    }
+    
+    .progress-bar-container {
+        background: #e9ecef;
+        border-radius: 10px;
+        height: 8px;
+        margin-bottom: 2rem;
+        overflow: hidden;
+    }
+    
+    .progress-bar {
+        background: linear-gradient(135deg, var(--secondary-color), #5dade2);
+        height: 100%;
+        width: 0%;
+        transition: width 0.3s ease;
+        border-radius: 10px;
+    }
+    
+    @media (max-width: 768px) {
+        .form-container {
+            margin-top: 1rem;
+        }
+        
+        .form-header, .form-body {
+            padding: 1.5rem;
+        }
+        
+        .form-section {
+            padding: 1rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="form-container">
+                <div class="form-header">
+                    <i class="bi bi-person-plus-fill" style="font-size: 2.5rem; margin-bottom: 1rem;"></i>
+                    <h2>Add New Student</h2>
+                    <p>Enter student information to create a new record</p>
+                </div>
+                
+                <!-- Progress Bar -->
+                <div class="px-4 pt-3">
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" id="formProgress"></div>
+                    </div>
+                </div>
+                
+                <div class="form-body">
+                    <form method="POST" id="addStudentForm" novalidate>
+                        <!-- Personal Information Section -->
+                        <div class="form-section">
+                            <div class="form-section-title">
+                                <i class="bi bi-person-fill"></i>
+                                Personal Information
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="full_name" name="full_name" 
+                                               placeholder="Full Name" required maxlength="100">
+                                        <label for="full_name" class="required-field">
+                                            <i class="bi bi-person-fill me-2"></i>Full Name
+                                        </label>
+                                        <div class="invalid-feedback">
+                                            Please enter the student's full name (at least 3 characters).
+                                        </div>
+                                        <div class="character-count">
+                                            <span id="full_name_count">0</span>/100 characters
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <input type="email" class="form-control" id="email" name="email" 
+                                               placeholder="Email Address" required>
+                                        <label for="email" class="required-field">
+                                            <i class="bi bi-envelope-fill me-2"></i>Email Address
+                                        </label>
+                                        <div class="invalid-feedback">
+                                            Please enter a valid email address.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="university_number" name="university_number" 
+                                               placeholder="University Number" required pattern="[0-9]{7}" maxlength="7">
+                                        <label for="university_number" class="required-field">
+                                            <i class="bi bi-card-text me-2"></i>University Number
+                                        </label>
+                                        <div class="invalid-feedback">
+                                            Please enter a 7-digit university number.
+                                        </div>
+                                        <div class="form-text">Format: 7 digits (e.g., 2021001)</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <input type="tel" class="form-control" id="phone" name="phone" 
+                                               placeholder="Phone Number" pattern="[+][0-9]{12,15}">
+                                        <label for="phone">
+                                            <i class="bi bi-telephone-fill me-2"></i>Phone Number
+                                        </label>
+                                        <div class="invalid-feedback">
+                                            Please enter a valid phone number with country code.
+                                        </div>
+                                        <div class="form-text">Format: +966501234567</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Academic Information Section -->
+                        <div class="form-section">
+                            <div class="form-section-title">
+                                <i class="bi bi-book-fill"></i>
+                                Academic Information
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <select class="form-select" id="major" name="major" required>
+                                            <option value="">Choose Major</option>
+                                            {% for major in allowed_majors %}
+                                                <option value="{{ major }}">{{ major }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <label for="major" class="required-field">
+                                            <i class="bi bi-mortarboard-fill me-2"></i>Major
+                                        </label>
+                                        <div class="invalid-feedback">
+                                            Please select a major.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <select class="form-select" id="nationality" name="nationality" required>
+                                            <option value="">Choose Nationality</option>
+                                            {% for country in allowed_countries %}
+                                                <option value="{{ country }}">{{ country }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <label for="nationality" class="required-field">
+                                            <i class="bi bi-globe-fill me-2"></i>Nationality
+                                        </label>
+                                        <div class="invalid-feedback">
+                                            Please select nationality.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Personal Details Section -->
+                        <div class="form-section">
+                            <div class="form-section-title">
+                                <i class="bi bi-person-badge-fill"></i>
+                                Personal Details
+                            </div>
+                            
+                            <!-- Gender Radio Buttons -->
+                            <div class="mb-3">
+                                <label class="form-label required-field">
+                                    <i class="bi bi-gender-ambiguous me-2"></i>Gender
+                                </label>
+                                <div class="form-check-group">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="gender" id="male" value="Male" required>
+                                        <label class="form-check-label" for="male">
+                                            <i class="bi bi-person-fill me-2"></i>Male
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="gender" id="female" value="Female" required>
+                                        <label class="form-check-label" for="female">
+                                            <i class="bi bi-person-fill me-2"></i>Female
+                                        </label>
+                                    </div>
+                                    <div class="invalid-feedback">
+                                        Please select gender.
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Status Radio Buttons -->
+                            <div class="mb-3">
+                                <label class="form-label required-field">
+                                    <i class="bi bi-person-check-fill me-2"></i>Status
+                                </label>
+                                <div class="form-check-group">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="status" id="active" value="Active" required checked>
+                                        <label class="form-check-label" for="active">
+                                            <i class="bi bi-check-circle-fill me-2 text-success"></i>Active
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="status" id="inactive" value="Inactive" required>
+                                        <label class="form-check-label" for="inactive">
+                                            <i class="bi bi-x-circle-fill me-2 text-danger"></i>Inactive
+                                        </label>
+                                    </div>
+                                    <div class="invalid-feedback">
+                                        Please select status.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Course Interests Section (Checkbox List) -->
+                        <div class="form-section">
+                            <div class="form-section-title">
+                                <i class="bi bi-list-check"></i>
+                                Course Interests (Optional)
+                            </div>
+                            
+                            <label class="form-label">
+                                <i class="bi bi-heart-fill me-2"></i>Select areas of interest
+                            </label>
+                            <div class="checkbox-list">
+                                {% for course in available_courses %}
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="interests" 
+                                               id="interest_{{ loop.index }}" value="{{ course }}">
+                                        <label class="form-check-label" for="interest_{{ loop.index }}">
+                                            {{ course }}
+                                        </label>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            <div class="form-text">
+                                Select courses you're interested in (this helps with course recommendations)
+                            </div>
+                        </div>
+                        
+                        <!-- Additional Information Section -->
+                        <div class="form-section">
+                            <div class="form-section-title">
+                                <i class="bi bi-chat-text-fill"></i>
+                                Additional Information
+                            </div>
+                            
+                            <div class="form-floating">
+                                <textarea class="form-control" id="notes" name="notes" 
+                                          placeholder="Additional Notes" style="height: 120px" maxlength="500"></textarea>
+                                <label for="notes">
+                                    <i class="bi bi-chat-text-fill me-2"></i>Additional Notes (Optional)
+                                </label>
+                                <div class="character-count">
+                                    <span id="notes_count">0</span>/500 characters
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Terms and Conditions -->
+                        <div class="form-section">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="terms" name="terms" required>
+                                <label class="form-check-label" for="terms">
+                                    I confirm that all information provided is accurate and I agree to the 
+                                    <a href="#" class="text-decoration-none">Terms of Service</a> and 
+                                    <a href="#" class="text-decoration-none">Privacy Policy</a>
+                                </label>
+                                <div class="invalid-feedback">
+                                    You must agree to the terms and conditions.
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Submit Buttons -->
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <a href="{{ url_for('students') }}" class="btn-cancel">
+                                    <i class="bi bi-x-circle-fill me-2"></i>
+                                    Cancel
+                                </a>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <button type="submit" class="btn-submit">
+                                    <i class="bi bi-person-plus-fill me-2"></i>
+                                    Add Student
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Character counting
+    function setupCharacterCount(inputId, countId, maxLength) {
+        const input = document.getElementById(inputId);
+        const counter = document.getElementById(countId);
+        
+        if (input && counter) {
+            input.addEventListener('input', function() {
+                const count = this.value.length;
+                counter.textContent = count;
+                
+                if (count > maxLength * 0.9) {
+                    counter.style.color = '#dc3545';
+                } else if (count > maxLength * 0.7) {
+                    counter.style.color = '#ffc107';
+                } else {
+                    counter.style.color = '#6c757d';
+                }
+            });
+        }
+    }
+    
+    setupCharacterCount('full_name', 'full_name_count', 100);
+    setupCharacterCount('notes', 'notes_count', 500);
+    
+    // Form progress tracking
+    function updateFormProgress() {
+        const form = document.getElementById('addStudentForm');
+        const requiredFields = form.querySelectorAll('[required]');
+        let filledFields = 0;
+        
+        requiredFields.forEach(field => {
+            if (field.type === 'radio') {
+                const radioGroup = form.querySelectorAll(`[name="${field.name}"]`);
+                const isChecked = Array.from(radioGroup).some(radio => radio.checked);
+                if (isChecked) filledFields++;
+            } else if (field.type === 'checkbox') {
+                if (field.checked) filledFields++;
+            } else {
+                if (field.value.trim()) filledFields++;
+            }
+        });
+        
+        const progress = (filledFields / requiredFields.length) * 100;
+        document.getElementById('formProgress').style.width = progress + '%';
+    }
+    
+    // Add event listeners for progress tracking
+    document.querySelectorAll('input, select, textarea').forEach(field => {
+        field.addEventListener('input', updateFormProgress);
+        field.addEventListener('change', updateFormProgress);
+    });
+    
+    // University number formatting
+    document.getElementById('university_number').addEventListener('input', function() {
+        this.value = this.value.replace(/\D/g, '').substring(0, 7);
+    });
+    
+    // Phone number formatting
+    document.getElementById('phone').addEventListener('input', function() {
+        let value = this.value.replace(/\D/g, '');
+        if (value && !value.startsWith('966')) {
+            if (value.startsWith('0')) {
+                value = '966' + value.substring(1);
+            } else if (value.startsWith('5')) {
+                value = '966' + value;
+            }
+        }
+        this.value = value ? '+' + value : '';
+    });
+    
+    // Form validation
+    document.getElementById('addStudentForm').addEventListener('submit', function(e) {
+        const form = this;
+        let isValid = true;
+        
+        // Validate all required fields
+        const requiredFields = form.querySelectorAll('[required]');
+        requiredFields.forEach(field => {
+            if (field.type === 'radio') {
+                const radioGroup = form.querySelectorAll(`[name="${field.name}"]`);
+                const isChecked = Array.from(radioGroup).some(radio => radio.checked);
+                
+                radioGroup.forEach(radio => {
+                    const group = radio.closest('.form-check-group');
+                    if (!isChecked) {
+                        group.classList.add('is-invalid');
+                        isValid = false;
+                    } else {
+                        group.classList.remove('is-invalid');
+                        group.classList.add('is-valid');
+                    }
+                });
+            } else {
+                if (!field.value.trim() || !field.checkValidity()) {
+                    field.classList.add('is-invalid');
+                    isValid = false;
+                } else {
+                    field.classList.remove('is-invalid');
+                    field.classList.add('is-valid');
+                }
+            }
+        });
+        
+        // Custom validation for university number
+        const universityNumber = document.getElementById('university_number');
+        if (universityNumber.value.length !== 7) {
+            universityNumber.classList.add('is-invalid');
+            isValid = false;
+        }
+        
+        // Custom validation for email uniqueness (would be checked server-side)
+        const email = document.getElementById('email');
+        if (email.value && !email.checkValidity()) {
+            email.classList.add('is-invalid');
+            isValid = false;
+        }
+        
+        if (!isValid) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            // Scroll to first invalid field
+            const firstInvalid = form.querySelector('.is-invalid');
+            if (firstInvalid) {
+                firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                firstInvalid.focus();
+            }
+        } else {
+            // Show loading state
+            const submitBtn = form.querySelector('button[type="submit"]');
+            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Adding Student...';
+            submitBtn.disabled = true;
+        }
+        
+        form.classList.add('was-validated');
+    });
+    
+    // Real-time validation
+    document.querySelectorAll('input, select, textarea').forEach(field => {
+        field.addEventListener('blur', function() {
+            if (this.hasAttribute('required')) {
+                if (this.type === 'radio') {
+                    // Handle radio button validation
+                    const radioGroup = document.querySelectorAll(`[name="${this.name}"]`);
+                    const isChecked = Array.from(radioGroup).some(radio => radio.checked);
+                    const group = this.closest('.form-check-group');
+                    
+                    if (isChecked) {
+                        group.classList.remove('is-invalid');
+                        group.classList.add('is-valid');
+                    } else {
+                        group.classList.remove('is-valid');
+                        group.classList.add('is-invalid');
+                    }
+                } else {
+                    if (this.checkValidity() && this.value.trim()) {
+                        this.classList.remove('is-invalid');
+                        this.classList.add('is-valid');
+                    } else {
+                        this.classList.remove('is-valid');
+                        this.classList.add('is-invalid');
+                    }
+                }
+            }
+        });
+    });
+    
+    // Initialize progress
+    updateFormProgress();
+</script>
+{% endblock %}
+

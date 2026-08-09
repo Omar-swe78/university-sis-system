@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Teacher - {{ teacher.teacher_fullname }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Edit Teacher</h2>
+    <div class="card">
+        <div class="card-body">
+            <form method="POST" id="editTeacherForm">
+                <div class="mb-3">
+                    <label for="teacher_fullname" class="form-label">Full Name</label>
+                    <input type="text" class="form-control" id="teacher_fullname" name="teacher_fullname" 
+                           value="{{ teacher.teacher_fullname }}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" name="email" 
+                           value="{{ teacher.email }}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="major" class="form-label">Major</label>
+                    <select class="form-select" id="major" name="major" required>
+                        <option value="">Choose Major</option>
+                        {% for major in allowed_majors %}
+                            <option value="{{ major }}" {% if major == teacher.major %}selected{% endif %}>
+                                {{ major }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="phone" class="form-label">Phone</label>
+                    <input type="text" class="form-control" id="phone" name="phone" 
+                           value="{{ teacher.phone }}" placeholder="+966501234567">
+                </div>
+                <div class="mb-3">
+                    <label for="department" class="form-label">Department</label>
+                    <input type="text" class="form-control" id="department" name="department" 
+                           value="{{ teacher.department }}">
+                </div>
+                <button type="submit" class="btn btn-primary" id="submitBtn">
+                    <span class="spinner-border spinner-border-sm d-none me-2" role="status" aria-hidden="true"></span>
+                    Save Changes
+                </button>
+                <a href="{{ url_for('teachers') }}" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.getElementById('editTeacherForm').addEventListener('submit', function(e) {
+    const submitBtn = document.getElementById('submitBtn');
+    const spinner = submitBtn.querySelector('.spinner-border');
+    
+    // Show loading state
+    submitBtn.disabled = true;
+    spinner.classList.remove('d-none');
+});
+</script>
+{% endblock %} 

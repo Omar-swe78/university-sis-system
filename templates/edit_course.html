@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Course - University Management System{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Edit Course</h2>
+    <div class="card">
+        <div class="card-body">
+            <form method="POST">
+                <div class="mb-3">
+                    <label for="name" class="form-label">Course Name</label>
+                    <input type="text" class="form-control" id="name" name="name" value="{{ course.name }}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="code" class="form-label">Course Code</label>
+                    <input type="text" class="form-control" id="code" name="code" value="{{ course.code }}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="credit_hours" class="form-label">Credit Hours</label>
+                    <input type="number" class="form-control" id="credit_hours" name="credit_hours" min="1" max="10" value="{{ course.credit_hours }}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="section" class="form-label">Section</label>
+                    <input type="text" class="form-control" id="section" name="section" value="{{ course.section }}">
+                </div>
+                <div class="mb-3">
+                    <label for="room" class="form-label">Room</label>
+                    <input type="text" class="form-control" id="room" name="room" value="{{ course.room }}">
+                </div>
+                <div class="mb-3">
+                    <label for="time" class="form-label">Schedule (e.g. Sun/Mon 8:00-9:30)</label>
+                    <input type="text" class="form-control" id="time" name="time" value="{{ course.time }}">
+                </div>
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+                <a href="{{ url_for('courses') }}" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %} 

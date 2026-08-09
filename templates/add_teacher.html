@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Teacher - University Management System{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {% if category == 'success' %}
+                        <i class="bi bi-check-circle-fill me-2"></i>
+                    {% else %}
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    {% endif %}
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <h2 class="mb-4">Add New Teacher</h2>
+    <div class="card">
+        <div class="card-body">
+            <form method="POST" id="addTeacherForm">
+                <div class="mb-3">
+                    <label for="teacher_fullname" class="form-label">Full Name</label>
+                    <input type="text" class="form-control" id="teacher_fullname" name="teacher_fullname" 
+                           value="{{ teacher.teacher_fullname if teacher else '' }}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" name="email" 
+                           value="{{ teacher.email if teacher else '' }}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="major" class="form-label">Major</label>
+                    <select class="form-select" id="major" name="major" required>
+                        <option value="">Choose Major</option>
+                        {% for major in allowed_majors %}
+                            <option value="{{ major }}" {% if teacher and teacher.major == major %}selected{% endif %}>
+                                {{ major }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="phone" class="form-label">Phone</label>
+                    <input type="text" class="form-control" id="phone" name="phone" 
+                           value="{{ teacher.phone if teacher else '' }}" placeholder="+966501234567">
+                </div>
+                <div class="mb-3">
+                    <label for="department" class="form-label">Department</label>
+                    <input type="text" class="form-control" id="department" name="department" 
+                           value="{{ teacher.department if teacher else '' }}">
+                </div>
+                <button type="submit" class="btn btn-primary" id="submitBtn">
+                    <span class="spinner-border spinner-border-sm d-none me-2" role="status" aria-hidden="true"></span>
+                    Add Teacher
+                </button>
+                <a href="{{ url_for('teachers') }}" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.getElementById('addTeacherForm').addEventListener('submit', function(e) {
+    const submitBtn = document.getElementById('submitBtn');
+    const spinner = submitBtn.querySelector('.spinner-border');
+    
+    // Show loading state
+    submitBtn.disabled = true;
+    spinner.classList.remove('d-none');
+});
+
+// Auto-hide alerts after 5 seconds
+setTimeout(function() {
+    var alerts = document.querySelectorAll('.alert');
+    alerts.forEach(function(alert) {
+        var bsAlert = new bootstrap.Alert(alert);
+        bsAlert.close();
+    });
+}, 5000);
+</script>
+{% endblock %} 

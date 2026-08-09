@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block title %}Database Information - University Management System{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="bi bi-database-fill display-5 me-3 text-primary"></i>
+                        <h2 class="mb-0">Database Information</h2>
+                        <span class="badge ms-3 {{ 'bg-success' if db_info.status == 'Connected' else 'bg-danger' }}">
+                            {{ db_info.status }}
+                        </span>
+                    </div>
+                    <hr>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-4">
+                            <div class="info-item p-3 bg-light rounded">
+                                <span class="fw-bold">Server:</span> {{ db_info.server }}
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="info-item p-3 bg-light rounded">
+                                <span class="fw-bold">Database:</span> {{ db_info.database }}
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="info-item p-3 bg-light rounded">
+                                <span class="fw-bold">Username:</span> {{ db_info.username }}
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="info-item p-3 bg-light rounded">
+                                <span class="fw-bold">Driver:</span> {{ db_info.driver }}
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="info-item p-3 bg-light rounded">
+                                <span class="fw-bold">Connection Time:</span> {{ db_info.connection_time }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <h5>Connection String:</h5>
+                        <div class="connection-string bg-secondary bg-opacity-10 p-2 rounded">
+                            {{ db_info.connection_string }}
+                        </div>
+                    </div>
+                    {% if db_info.status == 'Connected' %}
+                        <div class="mb-4">
+                            <h5><i class="bi bi-table me-2"></i>Database Tables</h5>
+                            {% if db_info.tables %}
+                                <ul class="list-group list-group-flush mb-3">
+                                    {% for table in db_info.tables %}
+                                        <li class="list-group-item">{{ table }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% else %}
+                                <p class="text-muted">No tables found in the database.</p>
+                            {% endif %}
+                        </div>
+                        {% if db_info.students_table_columns %}
+                            <div class="mb-4">
+                                <h5><i class="bi bi-people-fill me-2"></i>Students Table Structure</h5>
+                                <p><strong>Total Records:</strong> {{ db_info.students_count }}</p>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-striped">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Column Name</th>
+                                                <th>Data Type</th>
+                                                <th>Nullable</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for column in db_info.students_table_columns %}
+                                                <tr>
+                                                    <td>{{ column.name }}</td>
+                                                    <td>{{ column.type }}</td>
+                                                    <td>{{ column.nullable }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% else %}
+                        <div class="alert alert-danger">
+                            <h5 class="mb-2"><i class="bi bi-exclamation-triangle-fill me-2"></i>Connection Error</h5>
+                            <p><strong>Error Details:</strong></p>
+                            <div class="connection-string bg-danger bg-opacity-10 p-2 rounded mb-2">{{ db_info.error }}</div>
+                            <p>Please check:</p>
+                            <ul>
+                                <li>SQL Server is running on localhost\SQLEXP2017</li>
+                                <li>Database 'UniversityDB' exists</li>
+                                <li>Username 'sa' and password '2003' are correct</li>
+                                <li>ODBC Driver 17 for SQL Server is installed</li>
+                            </ul>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

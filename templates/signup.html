@@ -1,0 +1,479 @@
+{% extends "base.html" %}
+
+{% block title %}Sign Up - University Management System{% endblock %}
+
+{% block extra_css %}
+<style>
+    .auth-container {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        margin: -2rem -15px 0 -15px;
+        padding: 2rem 15px;
+    }
+    
+    .auth-card {
+        width: 100%;
+        max-width: 600px;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        overflow: hidden;
+        animation: slideInUp 0.6s ease-out;
+    }
+    
+    .auth-header {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        text-align: center;
+        padding: 2rem;
+    }
+    
+    .auth-header h2 {
+        margin: 0;
+        font-size: 1.8rem;
+        font-weight: bold;
+    }
+    
+    .auth-header p {
+        margin: 0.5rem 0 0 0;
+        opacity: 0.9;
+    }
+    
+    .auth-body {
+        padding: 2rem;
+        max-height: 70vh;
+        overflow-y: auto;
+    }
+    
+    .form-floating {
+        margin-bottom: 1rem;
+    }
+    
+    .form-floating .form-control, .form-floating .form-select {
+        border-radius: 12px;
+        border: 2px solid #e9ecef;
+        padding: 1rem 0.75rem;
+        height: auto;
+    }
+    
+    .form-floating .form-control:focus, .form-floating .form-select:focus {
+        border-color: var(--secondary-color);
+        box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+    }
+    
+    .form-floating label {
+        padding: 1rem 0.75rem;
+        color: #6c757d;
+    }
+    
+    .form-check-group {
+        background: #f8f9fa;
+        border-radius: 12px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .form-check-group .form-check {
+        margin-bottom: 0.5rem;
+    }
+    
+    .form-check-group .form-check:last-child {
+        margin-bottom: 0;
+    }
+    
+    .form-check-input:checked {
+        background-color: var(--secondary-color);
+        border-color: var(--secondary-color);
+    }
+    
+    .btn-auth {
+        width: 100%;
+        padding: 12px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        border-radius: 12px;
+        background: linear-gradient(135deg, var(--secondary-color), #5dade2);
+        border: none;
+        color: white;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-auth:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(52, 152, 219, 0.3);
+        color: white;
+    }
+    
+    .auth-footer {
+        text-align: center;
+        padding: 1rem 2rem 2rem 2rem;
+        color: #6c757d;
+    }
+    
+    .auth-footer a {
+        color: var(--secondary-color);
+        text-decoration: none;
+        font-weight: 600;
+        transition: color 0.3s ease;
+    }
+    
+    .auth-footer a:hover {
+        color: var(--primary-color);
+        text-decoration: underline;
+    }
+    
+    .password-strength {
+        margin-top: 0.5rem;
+        font-size: 0.8rem;
+    }
+    
+    .password-strength-bar {
+        height: 4px;
+        border-radius: 2px;
+        background: #e9ecef;
+        margin-top: 0.25rem;
+        overflow: hidden;
+    }
+    
+    .password-strength-fill {
+        height: 100%;
+        transition: all 0.3s ease;
+        border-radius: 2px;
+    }
+    
+    .strength-weak { background: #dc3545; width: 25%; }
+    .strength-fair { background: #fd7e14; width: 50%; }
+    .strength-good { background: #ffc107; width: 75%; }
+    .strength-strong { background: #198754; width: 100%; }
+    
+    @keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .auth-container {
+            padding: 1rem;
+        }
+        
+        .auth-card {
+            margin: 0;
+        }
+        
+        .auth-header, .auth-body, .auth-footer {
+            padding: 1.5rem;
+        }
+        
+        .auth-body {
+            max-height: 60vh;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <i class="bi bi-person-plus-fill" style="font-size: 2.5rem; margin-bottom: 1rem;"></i>
+            <h2>Create Account</h2>
+            <p>Join our university management system</p>
+        </div>
+        
+        <div class="auth-body">
+            <form method="POST" id="signupForm" novalidate>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="name" name="name" placeholder="Full Name" required>
+                            <label for="name"><i class="bi bi-person-fill me-2"></i>Full Name</label>
+                            <div class="invalid-feedback">
+                                Please enter your full name (at least 3 characters).
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input type="email" class="form-control" id="email" name="email" placeholder="Email" required>
+                            <label for="email"><i class="bi bi-envelope-fill me-2"></i>Email Address</label>
+                            <div class="invalid-feedback">
+                                Please enter a valid email address.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+                            <label for="password"><i class="bi bi-lock-fill me-2"></i>Password</label>
+                            <div class="invalid-feedback">
+                                Password must be at least 6 characters long.
+                            </div>
+                            <div class="password-strength">
+                                <div class="password-strength-bar">
+                                    <div class="password-strength-fill" id="passwordStrengthFill"></div>
+                                </div>
+                                <small id="passwordStrengthText" class="text-muted">Enter a password</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input type="password" class="form-control" id="confirm_password" name="confirm_password" placeholder="Confirm Password" required>
+                            <label for="confirm_password"><i class="bi bi-lock-check-fill me-2"></i>Confirm Password</label>
+                            <div class="invalid-feedback">
+                                Passwords do not match.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <select class="form-select" id="role" name="role" required>
+                                <option value="">Choose Role</option>
+                                <option value="student">Student</option>
+                                <option value="teacher">Teacher</option>
+                                <option value="admin">Administrator</option>
+                            </select>
+                            <label for="role"><i class="bi bi-person-badge-fill me-2"></i>Role</label>
+                            <div class="invalid-feedback">
+                                Please select your role.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <select class="form-select" id="nationality" name="nationality" required>
+                                <option value="">Choose Nationality</option>
+                                {% for country in allowed_countries %}
+                                    <option value="{{ country }}">{{ country }}</option>
+                                {% endfor %}
+                            </select>
+                            <label for="nationality"><i class="bi bi-globe-fill me-2"></i>Nationality</label>
+                            <div class="invalid-feedback">
+                                Please select your nationality.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-check-group">
+                    <label class="form-label fw-bold">
+                        <i class="bi bi-gender-ambiguous me-2"></i>Gender
+                    </label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="gender" id="male" value="Male" required>
+                        <label class="form-check-label" for="male">Male</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="gender" id="female" value="Female" required>
+                        <label class="form-check-label" for="female">Female</label>
+                    </div>
+                    <div class="invalid-feedback">
+                        Please select your gender.
+                    </div>
+                </div>
+                
+                <div class="form-check-group">
+                    <label class="form-label fw-bold">
+                        <i class="bi bi-person-check-fill me-2"></i>Status
+                    </label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="status" id="active" value="Active" required>
+                        <label class="form-check-label" for="active">Active</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="status" id="inactive" value="Inactive" required>
+                        <label class="form-check-label" for="inactive">Inactive</label>
+                    </div>
+                    <div class="invalid-feedback">
+                        Please select your status.
+                    </div>
+                </div>
+                
+                <div id="majorField" style="display: none;">
+                    <div class="form-floating">
+                        <select class="form-select" id="major" name="major">
+                            <option value="">Choose Major</option>
+                            {% for major in allowed_majors %}
+                                <option value="{{ major }}">{{ major }}</option>
+                            {% endfor %}
+                        </select>
+                        <label for="major"><i class="bi bi-book-fill me-2"></i>Major (for Teachers)</label>
+                        <div class="invalid-feedback">
+                            Please select your major.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" id="terms" name="terms" required>
+                    <label class="form-check-label" for="terms">
+                        I agree to the <a href="#" class="text-decoration-none">Terms of Service</a> and 
+                        <a href="#" class="text-decoration-none">Privacy Policy</a>
+                    </label>
+                    <div class="invalid-feedback">
+                        You must agree to the terms and conditions.
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-auth">
+                    <i class="bi bi-person-plus-fill me-2"></i>
+                    Create Account
+                </button>
+            </form>
+        </div>
+        
+        <div class="auth-footer">
+            <p class="mb-0">
+                Already have an account? 
+                <a href="{{ url_for('auth.signin') }}">Sign in here</a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Show/hide major field based on role
+    document.getElementById('role').addEventListener('change', function() {
+        const majorField = document.getElementById('majorField');
+        const majorSelect = document.getElementById('major');
+        
+        if (this.value === 'teacher') {
+            majorField.style.display = 'block';
+            majorSelect.required = true;
+        } else {
+            majorField.style.display = 'none';
+            majorSelect.required = false;
+            majorSelect.value = '';
+        }
+    });
+    
+    // Password strength checker
+    document.getElementById('password').addEventListener('input', function() {
+        const password = this.value;
+        const strengthFill = document.getElementById('passwordStrengthFill');
+        const strengthText = document.getElementById('passwordStrengthText');
+        
+        let strength = 0;
+        let strengthLabel = '';
+        
+        if (password.length >= 6) strength++;
+        if (password.match(/[a-z]/)) strength++;
+        if (password.match(/[A-Z]/)) strength++;
+        if (password.match(/[0-9]/)) strength++;
+        if (password.match(/[^a-zA-Z0-9]/)) strength++;
+        
+        strengthFill.className = 'password-strength-fill';
+        
+        switch (strength) {
+            case 0:
+            case 1:
+                strengthFill.classList.add('strength-weak');
+                strengthLabel = 'Weak';
+                break;
+            case 2:
+                strengthFill.classList.add('strength-fair');
+                strengthLabel = 'Fair';
+                break;
+            case 3:
+                strengthFill.classList.add('strength-good');
+                strengthLabel = 'Good';
+                break;
+            case 4:
+            case 5:
+                strengthFill.classList.add('strength-strong');
+                strengthLabel = 'Strong';
+                break;
+        }
+        
+        strengthText.textContent = password.length > 0 ? `Password strength: ${strengthLabel}` : 'Enter a password';
+    });
+    
+    // Form validation
+    document.getElementById('signupForm').addEventListener('submit', function(e) {
+        const form = this;
+        let isValid = true;
+        
+        // Validate all required fields
+        const requiredFields = form.querySelectorAll('[required]');
+        requiredFields.forEach(field => {
+            if (field.type === 'radio') {
+                const radioGroup = form.querySelectorAll(`[name="${field.name}"]`);
+                const isChecked = Array.from(radioGroup).some(radio => radio.checked);
+                
+                radioGroup.forEach(radio => {
+                    if (!isChecked) {
+                        radio.classList.add('is-invalid');
+                        isValid = false;
+                    } else {
+                        radio.classList.remove('is-invalid');
+                        radio.classList.add('is-valid');
+                    }
+                });
+            } else {
+                if (!field.value.trim() || !field.checkValidity()) {
+                    field.classList.add('is-invalid');
+                    isValid = false;
+                } else {
+                    field.classList.remove('is-invalid');
+                    field.classList.add('is-valid');
+                }
+            }
+        });
+        
+        // Check password confirmation
+        const password = document.getElementById('password');
+        const confirmPassword = document.getElementById('confirm_password');
+        
+        if (password.value !== confirmPassword.value) {
+            confirmPassword.classList.add('is-invalid');
+            isValid = false;
+        } else if (confirmPassword.value.trim()) {
+            confirmPassword.classList.remove('is-invalid');
+            confirmPassword.classList.add('is-valid');
+        }
+        
+        if (!isValid) {
+            e.preventDefault();
+            e.stopPropagation();
+        } else {
+            // Show loading state
+            const submitBtn = form.querySelector('button[type="submit"]');
+            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Creating Account...';
+            submitBtn.disabled = true;
+        }
+        
+        form.classList.add('was-validated');
+    });
+    
+    // Real-time validation for password confirmation
+    document.getElementById('confirm_password').addEventListener('input', function() {
+        const password = document.getElementById('password').value;
+        
+        if (this.value === password && this.value.trim()) {
+            this.classList.remove('is-invalid');
+            this.classList.add('is-valid');
+        } else if (this.value.trim()) {
+            this.classList.remove('is-valid');
+            this.classList.add('is-invalid');
+        }
+    });
+</script>
+{% endblock %}
+

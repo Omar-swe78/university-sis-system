@@ -1,0 +1,211 @@
+{% extends 'base.html' %}
+
+{% block title %}Student Dashboard - University Management System{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Sidebar -->
+    <div class="col-md-3">
+        <div class="sidebar">
+            <div class="text-center mb-4">
+                <div class="avatar mb-3">
+                    <i class="bi bi-person-circle display-1"></i>
+                </div>
+                <h5>{{ student_info.name }}</h5>
+                <p class="text-muted mb-0">{{ student_info.university_number }}</p>
+                <p class="text-muted">{{ student_info.major }}</p>
+            </div>
+            
+            <div class="nav flex-column">
+                <a href="{{ url_for('student_info') }}" class="nav-link">
+                    <i class="bi bi-person-fill me-2"></i>My Profile
+                </a>
+                <a href="{{ url_for('student_courses') }}" class="nav-link">
+                    <i class="bi bi-book-fill me-2"></i>My Courses
+                </a>
+                <a href="{{ url_for('student_schedule') }}" class="nav-link">
+                    <i class="bi bi-calendar-fill me-2"></i>Schedule
+                </a>
+                <a href="{{ url_for('student_register_courses') }}" class="nav-link">
+                    <i class="bi bi-plus-circle-fill me-2"></i>Register Courses
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="col-md-9">
+        <!-- Welcome Section -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Welcome back, {{ student_info.name }}!</h4>
+                        <p class="card-text">Here's your academic overview for this semester.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="row mb-4">
+            <div class="col-md-6 col-lg-3 mb-3">
+                <div class="stats-card">
+                    <i class="bi bi-book-fill display-4"></i>
+                    <h3>{{ registered_courses|length }}</h3>
+                    <p class="mb-0">Enrolled Courses</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 mb-3">
+                <div class="stats-card" style="background: linear-gradient(135deg, #fc6076, #ff9a44);">
+                    <i class="bi bi-clock-fill display-4"></i>
+                    <h3>{{ weekly_schedule|length }}</h3>
+                    <p class="mb-0">Classes/Week</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 mb-3">
+                <div class="stats-card" style="background: linear-gradient(135deg, #11998e, #38ef7d);">
+                    <i class="bi bi-mortarboard-fill display-4"></i>
+                    <h3>3.75</h3>
+                    <p class="mb-0">Current GPA</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 mb-3">
+                <div class="stats-card" style="background: linear-gradient(135deg, #45b649, #dce35b);">
+                    <i class="bi bi-award-fill display-4"></i>
+                    <h3>90</h3>
+                    <p class="mb-0">Credits Done</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Current Courses -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4"><i class="bi bi-book-fill me-2"></i>Current Courses</h5>
+                        {% if registered_courses %}
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Course Name</th>
+                                            <th>Credit Hours</th>
+                                            <th>Section</th>
+                                            <th>Room</th>
+                                            <th>Schedule</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for course in registered_courses %}
+                                            <tr>
+                                                <td>{{ course.name }}</td>
+                                                <td>{{ course.credit_hours }}</td>
+                                                <td>{{ course.section }}</td>
+                                                <td>{{ course.room }}</td>
+                                                <td>{{ course.time }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <div class="alert alert-info">
+                                <i class="bi bi-info-circle-fill me-2"></i>
+                                You are not enrolled in any courses yet.
+                                <a href="{{ url_for('student_register_courses') }}" class="alert-link">Register for courses now</a>.
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Today's Schedule -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4"><i class="bi bi-calendar-fill me-2"></i>Today's Schedule</h5>
+                        {% if weekly_schedule %}
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Time</th>
+                                            <th>Course</th>
+                                            <th>Room</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for day, time, course in weekly_schedule %}
+                                            {% if day == current_day %}
+                                                <tr>
+                                                    <td>{{ time }}</td>
+                                                    <td>{{ course }}</td>
+                                                    <td>{{ get_course_room(course) }}</td>
+                                                </tr>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <div class="alert alert-info">
+                                <i class="bi bi-info-circle-fill me-2"></i>
+                                No classes scheduled for today.
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4"><i class="bi bi-link-45deg me-2"></i>Quick Links</h5>
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <a href="{{ url_for('student_register_courses') }}" class="btn btn-primary w-100">
+                                    <i class="bi bi-plus-circle-fill me-2"></i>Register Courses
+                                </a>
+                            </div>
+                            <div class="col-md-4">
+                                <a href="{{ url_for('student_schedule') }}" class="btn btn-success w-100">
+                                    <i class="bi bi-calendar-fill me-2"></i>View Schedule
+                                </a>
+                            </div>
+                            <div class="col-md-4">
+                                <a href="{{ url_for('student_info') }}" class="btn btn-info w-100">
+                                    <i class="bi bi-person-fill me-2"></i>Update Profile
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Add active class to current sidebar link
+    document.addEventListener('DOMContentLoaded', function() {
+        var currentPath = window.location.pathname;
+        var sidebarLinks = document.querySelectorAll('.sidebar .nav-link');
+        
+        sidebarLinks.forEach(function(link) {
+            if (link.getAttribute('href') === currentPath) {
+                link.classList.add('active');
+            }
+        });
+    });
+</script>
+{% endblock %}
+

@@ -1,0 +1,250 @@
+{% extends "base.html" %}
+
+{% block title %}Student Management - University Management System{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h4 class="card-title mb-0">
+                        <i class="bi bi-people-fill me-2"></i>Student Management
+                    </h4>
+                    <a href="{{ url_for('add_student') }}" class="btn btn-primary">
+                        <i class="bi bi-person-plus-fill me-2"></i>Add New Student
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Statistics Cards -->
+<div class="row mb-4">
+    <div class="col-md-3 col-sm-6 mb-3">
+        <div class="stats-card">
+            <i class="bi bi-people-fill display-4"></i>
+            <h3>{{ students|length }}</h3>
+            <p class="mb-0">Total Students</p>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6 mb-3">
+        <div class="stats-card" style="background: linear-gradient(135deg, #fc6076, #ff9a44);">
+            <i class="bi bi-person-check-fill display-4"></i>
+            <h3>{{ active_students }}</h3>
+            <p class="mb-0">Active Students</p>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6 mb-3">
+        <div class="stats-card" style="background: linear-gradient(135deg, #11998e, #38ef7d);">
+            <i class="bi bi-person-x-fill display-4"></i>
+            <h3>{{ inactive_students }}</h3>
+            <p class="mb-0">Inactive Students</p>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6 mb-3">
+        <div class="stats-card" style="background: linear-gradient(135deg, #45b649, #dce35b);">
+            <i class="bi bi-calendar-plus-fill display-4"></i>
+            <h3>{{ new_students_this_month }}</h3>
+            <p class="mb-0">New This Month</p>
+        </div>
+    </div>
+</div>
+
+<!-- Search and Filter -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="GET" id="searchForm">
+            <div class="row align-items-end">
+                <div class="col-md-3 mb-3">
+                    <label for="search" class="form-label">
+                        <i class="bi bi-search me-1"></i>Search Students
+                    </label>
+                    <input type="text" class="form-control" id="search" name="search" 
+                           value="{{ request.args.get('search', '') }}" 
+                           placeholder="Name, email, or student ID">
+                </div>
+                <div class="col-md-2 mb-3">
+                    <label for="major" class="form-label">
+                        <i class="bi bi-book me-1"></i>Major
+                    </label>
+                    <select class="form-select" id="major" name="major">
+                        <option value="">All Majors</option>
+                        {% for major in allowed_majors %}
+                            <option value="{{ major }}" 
+                                    {% if request.args.get('major') == major %}selected{% endif %}>
+                                {{ major }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2 mb-3">
+                    <label for="status" class="form-label">
+                        <i class="bi bi-person-check me-1"></i>Status
+                    </label>
+                    <select class="form-select" id="status" name="status">
+                        <option value="">All Status</option>
+                        <option value="Active" {% if request.args.get('status') == 'Active' %}selected{% endif %}>Active</option>
+                        <option value="Inactive" {% if request.args.get('status') == 'Inactive' %}selected{% endif %}>Inactive</option>
+                    </select>
+                </div>
+                <div class="col-md-2 mb-3">
+                    <label for="nationality" class="form-label">
+                        <i class="bi bi-globe me-1"></i>Nationality
+                    </label>
+                    <select class="form-select" id="nationality" name="nationality">
+                        <option value="">All Countries</option>
+                        {% for country in allowed_countries %}
+                            <option value="{{ country }}" 
+                                    {% if request.args.get('nationality') == country %}selected{% endif %}>
+                                {{ country }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-search me-1"></i>Search
+                        </button>
+                        <a href="{{ url_for('students') }}" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-clockwise me-1"></i>Reset
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </form>
+        
+        <!-- Export Buttons -->
+        <div class="row mt-3">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center flex-wrap">
+                    <div>
+                        <strong>Export Options:</strong>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <a href="{{ url_for('export_students', format='excel') }}" class="btn btn-success">
+                            <i class="bi bi-file-earmark-excel-fill me-1"></i>Excel
+                        </a>
+                        <a href="{{ url_for('export_students', format='word') }}" class="btn btn-primary">
+                            <i class="bi bi-file-earmark-word-fill me-1"></i>Word
+                        </a>
+                        <a href="{{ url_for('export_students', format='pdf') }}" class="btn btn-danger">
+                            <i class="bi bi-file-earmark-pdf-fill me-1"></i>PDF
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Students Table -->
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th><i class="bi bi-person me-2"></i>Student</th>
+                        <th><i class="bi bi-envelope me-2"></i>Email</th>
+                        <th><i class="bi bi-card-text me-2"></i>Student ID</th>
+                        <th class="d-none d-md-table-cell"><i class="bi bi-book me-2"></i>Major</th>
+                        <th class="d-none d-lg-table-cell"><i class="bi bi-globe me-2"></i>Nationality</th>
+                        <th><i class="bi bi-check-circle me-2"></i>Status</th>
+                        <th><i class="bi bi-gear me-2"></i>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="avatar me-3">
+                                        {{ student.full_name[0].upper() }}
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold">{{ student.full_name }}</div>
+                                        <small class="text-muted d-md-none">{{ student.major }}</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <a href="mailto:{{ student.email }}" class="text-decoration-none">
+                                    {{ student.email }}
+                                </a>
+                            </td>
+                            <td>
+                                <code>{{ student.university_number }}</code>
+                            </td>
+                            <td class="d-none d-md-table-cell">
+                                <span class="badge bg-light text-dark">{{ student.major }}</span>
+                            </td>
+                            <td class="d-none d-lg-table-cell">{{ student.nationality }}</td>
+                            <td>
+                                <span class="badge bg-{{ 'success' if student.status == 'Active' else 'warning' }}">
+                                    <i class="bi bi-{% if student.status == 'Active' %}check-circle{% else %}x-circle{% endif %}-fill me-1"></i>
+                                    {{ student.status }}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="d-flex gap-1">
+                                    <a href="{{ url_for('edit_student', university_number=student.university_number) }}" 
+                                       class="btn btn-sm btn-warning" title="Edit">
+                                        <i class="bi bi-pencil-fill"></i>
+                                    </a>
+                                    <a href="{{ url_for('delete_student', university_number=student.university_number) }}" 
+                                       class="btn btn-sm btn-danger" 
+                                       onclick="return confirm('Are you sure you want to delete {{ student.full_name }}?')"
+                                       title="Delete">
+                                        <i class="bi bi-trash-fill"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="7" class="text-center py-4">
+                                <div class="text-muted">
+                                    <i class="bi bi-inbox display-4 d-block mb-3"></i>
+                                    <h5>No students found</h5>
+                                    <p>Try adjusting your search criteria or add a new student.</p>
+                                    <a href="{{ url_for('add_student') }}" class="btn btn-primary">
+                                        <i class="bi bi-person-plus-fill me-2"></i>Add First Student
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Auto-submit search form on filter change
+    document.querySelectorAll('#major, #status, #nationality').forEach(select => {
+        select.addEventListener('change', function() {
+            document.getElementById('searchForm').submit();
+        });
+    });
+    
+    // Add loading states to export buttons
+    document.querySelectorAll('.btn-export').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const originalText = this.innerHTML;
+            this.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Exporting...';
+            
+            setTimeout(() => {
+                this.innerHTML = originalText;
+            }, 3000);
+        });
+    });
+</script>
+{% endblock %}
+

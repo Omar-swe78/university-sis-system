@@ -1,0 +1,183 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard - University Management System{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Sidebar -->
+    <div class="col-md-3">
+        <div class="sidebar">
+            <h5 class="mb-3"><i class="bi bi-gear-fill me-2"></i>Admin Controls</h5>
+            <div class="nav flex-column">
+                <a href="{{ url_for('students') }}" class="nav-link">
+                    <i class="bi bi-people-fill me-2"></i>Manage Students
+                </a>
+                <a href="{{ url_for('teachers') }}" class="nav-link">
+                    <i class="bi bi-person-badge-fill me-2"></i>Manage Teachers
+                </a>
+                <a href="{{ url_for('courses') }}" class="nav-link">
+                    <i class="bi bi-book-fill me-2"></i>Manage Courses
+                </a>
+                <a href="{{ url_for('db_info') }}" class="nav-link">
+                    <i class="bi bi-database-fill me-2"></i>Database Info
+                </a>
+            </div>
+            
+            <h5 class="mt-4 mb-3"><i class="bi bi-file-earmark-arrow-down-fill me-2"></i>Export Data</h5>
+            <div class="nav flex-column">
+                <a href="{{ url_for('export_students', format='excel') }}" class="nav-link">
+                    <i class="bi bi-file-earmark-excel-fill me-2"></i>Export Students
+                </a>
+                <a href="{{ url_for('export_teachers', format='excel') }}" class="nav-link">
+                    <i class="bi bi-file-earmark-excel-fill me-2"></i>Export Teachers
+                </a>
+                <a href="{{ url_for('export_courses', format='excel') }}" class="nav-link">
+                    <i class="bi bi-file-earmark-excel-fill me-2"></i>Export Courses
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="col-md-9">
+        <div class="row mb-4">
+            <div class="col-12">
+                <h2 class="mb-4">Welcome, {{ admin_name }}!</h2>
+            </div>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="row mb-4">
+            <div class="col-md-6 col-lg-3 mb-3">
+                <div class="stats-card">
+                    <i class="bi bi-people-fill display-4"></i>
+                    <h3>{{ stats.total_students }}</h3>
+                    <p class="mb-0">Total Students</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 mb-3">
+                <div class="stats-card" style="background: linear-gradient(135deg, #fc6076, #ff9a44);">
+                    <i class="bi bi-person-badge-fill display-4"></i>
+                    <h3>{{ stats.total_teachers }}</h3>
+                    <p class="mb-0">Total Teachers</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 mb-3">
+                <div class="stats-card" style="background: linear-gradient(135deg, #11998e, #38ef7d);">
+                    <i class="bi bi-person-check-fill display-4"></i>
+                    <h3>{{ stats.active_students }}</h3>
+                    <p class="mb-0">Active Students</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 mb-3">
+                <div class="stats-card" style="background: linear-gradient(135deg, #45b649, #dce35b);">
+                    <i class="bi bi-book-fill display-4"></i>
+                    <h3>{{ stats.total_courses }}</h3>
+                    <p class="mb-0">Total Courses</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4"><i class="bi bi-lightning-fill me-2"></i>Quick Actions</h5>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <a href="{{ url_for('add_student') }}" class="btn btn-primary w-100">
+                                    <i class="bi bi-person-plus-fill me-2"></i>Add New Student
+                                </a>
+                            </div>
+                            <div class="col-md-6">
+                                <a href="{{ url_for('add_teacher') }}" class="btn btn-success w-100">
+                                    <i class="bi bi-person-plus-fill me-2"></i>Add New Teacher
+                                </a>
+                            </div>
+                            <div class="col-md-6">
+                                <a href="{{ url_for('add_course') }}" class="btn btn-warning w-100">
+                                    <i class="bi bi-plus-circle-fill me-2"></i>Create New Course
+                                </a>
+                            </div>
+                            <div class="col-md-6">
+                                <a href="{{ url_for('courses') }}" class="btn btn-info w-100">
+                                    <i class="bi bi-calendar-plus-fill me-2"></i>Schedule Management
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4"><i class="bi bi-activity me-2"></i>Recent Activity</h5>
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Time</th>
+                                        <th>Action</th>
+                                        <th>Details</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Just now</td>
+                                        <td>System Update</td>
+                                        <td>Database backup completed</td>
+                                        <td><span class="badge bg-success">Success</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>5 mins ago</td>
+                                        <td>New Registration</td>
+                                        <td>New student account created</td>
+                                        <td><span class="badge bg-primary">Completed</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>10 mins ago</td>
+                                        <td>Course Update</td>
+                                        <td>Schedule updated for CS101</td>
+                                        <td><span class="badge bg-info">Updated</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Add active class to current sidebar link
+    document.addEventListener('DOMContentLoaded', function() {
+        var currentPath = window.location.pathname;
+        var sidebarLinks = document.querySelectorAll('.sidebar .nav-link');
+        
+        sidebarLinks.forEach(function(link) {
+            if (link.getAttribute('href') === currentPath) {
+                link.classList.add('active');
+            }
+        });
+    });
+
+    // Refresh statistics periodically
+    function refreshStats() {
+        // In a real application, you would make an AJAX call here
+        // to fetch updated statistics
+    }
+    
+    // Refresh every 5 minutes
+    setInterval(refreshStats, 300000);
+</script>
+{% endblock %}

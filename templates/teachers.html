@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage Teachers - University Management System{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {% if category == 'success' %}
+                        <i class="bi bi-check-circle-fill me-2"></i>
+                    {% else %}
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    {% endif %}
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <h2 class="mb-4">Manage Teachers</h2>
+    <div class="mb-3">
+        <a href="{{ url_for('add_teacher') }}" class="btn btn-primary">
+            <i class="bi bi-person-plus-fill me-2"></i>Add New Teacher
+        </a>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Major</th>
+                            <th>Phone</th>
+                            <th>Department</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for teacher in teachers %}
+                        <tr>
+                            <td>{{ teacher.teacher_fullname }}</td>
+                            <td>{{ teacher.email }}</td>
+                            <td>{{ teacher.major }}</td>
+                            <td>{{ teacher.phone }}</td>
+                            <td>{{ teacher.department }}</td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <a href="{{ url_for('edit_teacher', teacher_id=teacher.teacher_id) }}" 
+                                       class="btn btn-sm btn-warning" title="Edit">
+                                        <i class="bi bi-pencil-fill"></i>
+                                    </a>
+                                    <a href="{{ url_for('delete_teacher', teacher_id=teacher.teacher_id) }}" 
+                                       class="btn btn-sm btn-danger" 
+                                       onclick="return confirm('Are you sure you want to delete {{ teacher.teacher_fullname }}? This action cannot be undone.');"
+                                       title="Delete">
+                                        <i class="bi bi-trash-fill"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="6" class="text-center py-4">
+                                <div class="text-muted">
+                                    <i class="bi bi-person-x display-4 d-block mb-3"></i>
+                                    <h5>No Teachers Found</h5>
+                                    <p>Add your first teacher to get started.</p>
+                                    <a href="{{ url_for('add_teacher') }}" class="btn btn-primary">
+                                        <i class="bi bi-person-plus-fill me-2"></i>Add First Teacher
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+// Auto-hide alerts after 5 seconds
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(function() {
+        var alerts = document.querySelectorAll('.alert');
+        alerts.forEach(function(alert) {
+            var bsAlert = new bootstrap.Alert(alert);
+            bsAlert.close();
+        });
+    }, 5000);
+});
+</script>
+{% endblock %}
+
+{% endblock %} 
